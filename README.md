@@ -58,19 +58,15 @@ Reference
 =========
 
 ```js
-Fixtures.saveFixtures({db, name})
-```
-
-{
+Fixtures.saveFixtures({
   *db*: (default: `<MONGO_URL database>`), a string name of the database to save,
   *name*: (default: `'default'`), a string name of the fixtures
-}
-
-```js
-Fixtures.loadFixtures({db, name})
+});
 ```
 
-{
+```js
+Fixtures.loadFixtures({
   *db*: (default: `<MONGO_URL database>`), a string name of the database to load,
   *name*: (default: `'default'`), a string name of the fixtures
-}
+});
+```
