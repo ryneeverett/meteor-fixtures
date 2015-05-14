@@ -19,14 +19,6 @@ if (Meteor.isServer) {
 }
 ```
 
-**Optional: Git ignore fixtures**
-
-You might not want to track database dumps for the sake of VCS performance.
-
-```sh
-echo 'tests/fixtures/' > .gitignore
-```
-
 Example Usage
 =============
 
@@ -60,13 +52,15 @@ Reference
 ```js
 Fixtures.saveFixtures({
   *db*: (default: `<MONGO_URL database>`), a string name of the database to save,
-  *name*: (default: `'default'`), a string name of the fixtures
+  *name*: (default: `'default'`), a string name of the fixtures,
+  *path*: (default: none), a string path at which to dump fixtures
 });
 ```
 
 ```js
 Fixtures.loadFixtures({
   *db*: (default: `<MONGO_URL database>`), a string name of the database to load,
-  *name*: (default: `'default'`), a string name of the fixtures
+  *name*: (default: `'default'`), a string name of the fixtures,
+  *path*: (default: none), a string path from which to load fixtures
 });
 ```

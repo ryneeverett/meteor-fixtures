@@ -1,12 +1,20 @@
 /* global Fixtures:true */
+/* global FixturesDummyCollection:true */
+
+FixturesDummyCollection = new Mongo.Collection('FixturesDummyCollection');
 
 Fixtures = this.Fixtures = function() {
   'use strict';
 
+  console.warn(db);
+  var db = FixturesDummyCollection.rawDatabase();
+
   function execute (cmd) {
     Npm.require('child_process').exec(cmd, function (error, stdout, stderr) {
-      !!error && console.warn(error);
       console.log(stdout + stderr);
+      if (!!error) {
+        throw error;
+      }
     });
   }
 
@@ -23,32 +31,47 @@ Fixtures = this.Fixtures = function() {
       args.name = 'default';
     }
 
+    if (!('path' in args)) {
+      args.path =  false;
+    }
+
+    args.mirror = ['fixtures', args.name, args.db].join('-');
+
     return args;
   }
 
   return {
     loadFixtures: function (passedArgs) {
-      var args = defaultArgs(passedArgs),
-          path = [
-        process.env.PWD, 'tests/fixtures', args.name, args.db].join('/');
+      var args = defaultArgs(passedArgs);
 
-      execute('mongorestore -h 127.0.0.1:3001 --db ' + args.db + ' ' + path);
+      if (args.path) {
+        var path = [args.path, args.name, args.db].join('/');
+
+        execute(
+          'mongorestore -h 127.0.0.1:3001 --db ' + args.mirror + ' ' + path);
+      }
+
+      db.copyDatabase(args.mirror, args.db);
     },
-    saveFixtures: function (args) {
-      defaultArgs(args);
+    saveFixtures: function (passedArgs) {
+      var args = defaultArgs(passedArgs);
 
-      var path = [process.env.PWD, 'tests/fixtures', args.name].join('/');
+      if (args.path) {
+        var path = [args.path, args.name].join('/');
 
-      Npm.require('fs').lstat(path + '/' + args.db, function(error) {
-        if (!!error && error.code === 'ENOENT') {
-          // If lstat throws an ENOENT error then the path doesn't exist.
-          execute(
-            'mongodump -h 127.0.0.1:3001 --db ' + args.db + ' -o ' + path);
-        } else {
-          console.warn(
-            'Path already exists! Remove existing fixtures before saving.');
-        }
-      });
+        Npm.require('fs').lstat(path + '/' + args.db, function(error) {
+          if (!!error && error.code === 'ENOENT') {
+            // If lstat throws an ENOENT error then the path doesn't exist.
+            execute(
+              'mongodump -h 127.0.0.1:3001 --db ' + args.mirror +
+              ' -o ' + path);
+          } else {
+            throw 'Path already exists! Remove fixtures before saving.';
+          }
+        });
+      }
+
+      db.copyDatabase(args.db, args.mirror);
     }
   };
 }();
