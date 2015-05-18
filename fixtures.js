@@ -34,10 +34,10 @@ Fixtures = this.Fixtures = function() {
 
       execute('mongorestore -h 127.0.0.1:3001 --db ' + args.db + ' ' + path);
     },
-    saveFixtures: function (args) {
-      defaultArgs(args);
+    saveFixtures: function (passedArgs) {
+      var args = defaultArgs(passedArgs),
 
-      var path = [process.env.PWD, 'tests/fixtures', args.name].join('/');
+          path = [process.env.PWD, 'tests/fixtures', args.name].join('/');
 
       Npm.require('fs').lstat(path + '/' + args.db, function(error) {
         if (!!error && error.code === 'ENOENT') {

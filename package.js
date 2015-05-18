@@ -2,7 +2,7 @@
 
 Package.describe({
   name: 'ryne:fixtures',
-  version: '0.0.1',
+  version: '0.0.2',
   summary: "Set your database to a consistent state in test.",
   git: 'https://github.com/ryneeverett/meteor-fixtures.git',
   documentation: 'README.md',
