@@ -24,7 +24,7 @@ if (Meteor.isServer) {
 You might not want to track database dumps for the sake of VCS performance.
 
 ```sh
-echo 'tests/fixtures/' > .gitignore
+echo 'tests/fixtures/' >> .gitignore
 ```
 
 Example Usage
